@@ -46,8 +46,25 @@ const ALL_NAMES = [
   "Zoe", "Alonso", "Carlos", "Ángel", "Agustín"
 ];
 
-// Get group color for a name
-const getNameColor = (name) => {
+// Purple shades for floating names
+const PURPLE_SHADES = [
+  { color: "text-purple-300", glow: "drop-shadow-[0_0_10px_rgba(216,180,254,0.6)]" },
+  { color: "text-purple-400", glow: "drop-shadow-[0_0_10px_rgba(192,132,252,0.6)]" },
+  { color: "text-purple-500", glow: "drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]" },
+  { color: "text-violet-300", glow: "drop-shadow-[0_0_10px_rgba(196,181,253,0.6)]" },
+  { color: "text-violet-400", glow: "drop-shadow-[0_0_10px_rgba(167,139,250,0.6)]" },
+  { color: "text-fuchsia-300", glow: "drop-shadow-[0_0_10px_rgba(240,171,252,0.6)]" },
+  { color: "text-fuchsia-400", glow: "drop-shadow-[0_0_10px_rgba(232,121,249,0.6)]" },
+];
+
+// Get purple shade based on name index
+const getPurpleShade = (name) => {
+  const index = ALL_NAMES.indexOf(name);
+  return PURPLE_SHADES[index % PURPLE_SHADES.length];
+};
+
+// Get group color for a name (used after sorting)
+const getGroupColor = (name) => {
   for (const [groupName, groupData] of Object.entries(GROUPS)) {
     if (groupData.members.includes(name)) {
       return { color: groupData.color, glow: groupData.glow };
@@ -61,7 +78,8 @@ const getNameColor = (name) => {
 
 // Floating Name Component
 const FloatingName = ({ name, initialPosition, isSorted }) => {
-  const { color, glow } = getNameColor(name);
+  // Use purple shade when floating
+  const { color, glow } = getPurpleShade(name);
   
   // Generate random wandering animation
   const wanderAnimation = useMemo(() => {
@@ -181,23 +199,25 @@ const Auryn = ({ onClick, isSorted }) => {
         }
       }}
     >
-      <motion.img
-        src={AURYN_IMAGE}
-        alt="Auryn - Click para ordenar los grupos"
-        className="w-40 h-40 md:w-56 md:h-56 lg:w-72 lg:h-72 object-contain drop-shadow-[0_0_30px_rgba(250,204,21,0.5)]"
-        animate={!isSorted ? {
-          rotate: [0, 5, -5, 0],
-          scale: [1, 1.02, 1],
-        } : {
-          rotate: 0,
-          scale: 1,
-        }}
-        transition={{
-          duration: 4,
-          repeat: !isSorted ? Infinity : 0,
-          ease: "easeInOut"
-        }}
-      />
+      <div className="relative w-40 h-40 md:w-56 md:h-56 lg:w-72 lg:h-72 rounded-full overflow-hidden">
+        <motion.img
+          src={AURYN_IMAGE}
+          alt="Auryn - Click para ordenar los grupos"
+          className="w-full h-full object-cover drop-shadow-[0_0_30px_rgba(250,204,21,0.5)]"
+          animate={!isSorted ? {
+            rotate: [0, 5, -5, 0],
+            scale: [1, 1.02, 1],
+          } : {
+            rotate: 0,
+            scale: 1,
+          }}
+          transition={{
+            duration: 4,
+            repeat: !isSorted ? Infinity : 0,
+            ease: "easeInOut"
+          }}
+        />
+      </div>
       {!isSorted && (
         <motion.div
           className="absolute inset-0 rounded-full bg-yellow-400/20"
