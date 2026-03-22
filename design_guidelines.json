@@ -1,0 +1,84 @@
+{
+  "theme": "dark",
+  "typography": {
+    "headings": "Playfair Display, Cormorant Garamond, or Cinzel (fantasy/mystical vibe)",
+    "body": "Inter or similar clean font, but headings must be magical/serif",
+    "weights": {
+      "headings": "font-bold tracking-widest uppercase text-2xl md:text-3xl",
+      "names": "font-medium text-lg md:text-xl",
+      "dary_message": "font-light italic text-yellow-300 text-lg md:text-xl mt-2"
+    }
+  },
+  "colors": {
+    "background": "bg-neutral-950 with a radial glow in the center from #1a1a1a to #0a0a0a",
+    "groups": {
+      "Los Comerrocas": "text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]",
+      "Los Silfos Nocturnos": "text-orange-600 drop-shadow-[0_0_8px_rgba(234,88,12,0.5)]",
+      "Los Fuegos Fatuos": "text-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]",
+      "Los Diminutenses": "text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]"
+    },
+    "text_primary": "text-white",
+    "auryn_glow": "drop-shadow-[0_0_25px_rgba(250,204,21,0.4)]"
+  },
+  "visual_enhancers": {
+    "background_texture": "Add a subtle noise overlay and slow-moving floating particles in the background using framer-motion to make the page feel alive, magical, and fitting for The Neverending Story.",
+    "auryn": "Hover scaling, infinite slow rotation or pulsing glow when idle. Click triggers a bright flash or accelerated spin.",
+    "names_idle": "When floating, names should wander around smoothly. Apply a text-shadow so they are always readable.",
+    "layout_animations": "Use framer-motion's layoutId for smooth, spectacular transitions when names move from floating random positions to their corner groups."
+  },
+  "data_mapping": {
+    "Los Comerrocas": ["Pablo A", "Olivia", "Carlos", "Luz"],
+    "Los Silfos Nocturnos": ["Jorge", "Agustín", "David", "Valeria", "Miriam"],
+    "Los Fuegos Fatuos": ["Salva", "Zoe", "Adriana", "Raúl", "Marcos"],
+    "Los Diminutenses": ["Elena", "Lucía", "Alonso", "Ángel", "Pablo M"],
+    "Special": {
+      "name": "Dary",
+      "message": "Ayudante de Jose"
+    }
+  },
+  "layouts": {
+    "container": "relative w-full h-screen overflow-hidden bg-neutral-950 text-white font-sans selection:bg-yellow-500/30",
+    "corners": "absolute w-auto max-w-[300px] p-8 flex flex-col gap-4 z-20",
+    "top_left": "top-0 left-0 items-start text-left",
+    "top_right": "top-0 right-0 items-end text-right",
+    "bottom_left": "bottom-0 left-0 items-start text-left",
+    "bottom_right": "bottom-0 right-0 items-end text-right",
+    "center": "absolute inset-0 m-auto w-[300px] h-[300px] z-50 flex flex-col items-center justify-center gap-6",
+    "floating_container": "absolute inset-0 z-10 pointer-events-none overflow-hidden"
+  },
+  "motion": {
+    "floating_state": "Map over all names. For each name, calculate an initial random fixed top (10% to 90%) and left (10% to 90%) on mount. Render them absolute in the floating_container. To make them wander, use framer-motion animate with an array of random x and y values, transition duration ~20-30s, ease linear, repeat Infinity, repeatType mirror.",
+    "sorted_state": "Render the 4 corner containers and map their respective names inside them as standard flex children. Render Dary in the center container under the Auryn. Because all names use layoutId={name}, Framer Motion will magically fly them from their random wandering absolute positions to their structured flex-box grid in the corners.",
+    "dary_message": "Render conditionally when sorted state is true. Use initial={{opacity: 0, y: 10}} animate={{opacity: 1, y: 0}} transition={{delay: 1.5, duration: 1}} so it elegantly fades in AFTER the names finish flying."
+  },
+  "accessibility": {
+    "contrast": "Ensure floating names have text-shadow (e.g. drop-shadow-md or text-shadow) to stand out against the dark magical background.",
+    "auryn_button": "Auryn image must be wrapped in a semantic button or have role='button' and tabIndex={0} with onKeyDown support. Add data-testid='auryn-trigger'."
+  },
+  "media": {
+    "auryn_image": "https://customer-assets.emergentagent.com/job_d9bfee2e-1cd6-4cca-8124-1a128871d13b/artifacts/8q4brk6d_Auryn.png"
+  },
+  "instructions_to_main_agent": [
+    "Build a single-page React app that implements the Escape Room sorting logic.",
+    "DO NOT USE standard generic UI or generic Vercel layouts. This must be a magical, spectacular visual experience matching The Neverending Story.",
+    "Use framer-motion heavily. `layoutId` is MANDATORY for the sorting effect to look like magic.",
+    "Define a React state `const [isSorted, setIsSorted] = useState(false)`.",
+    "When `!isSorted`, render all 20 names inside the `floating_container`. Give them initial random `left` and `top` percentages (use useMemo or useEffect to set them once so they don't jump on re-render). Wrap them in `<motion.div layoutId={name}>` and apply a wandering animation.",
+    "When `isSorted` is true, render the 4 corner group components, each containing a list of their specific members, wrapped in `<motion.div layoutId={name}>`.",
+    "This component unmounting from the absolute container and mounting in the corners with identical `layoutId` will trigger Framer Motion's FLIP animation, creating a smooth flying effect.",
+    "Dary should have his own `layoutId='Dary'` and fly to the center under the Auryn when sorted.",
+    "The 'Ayudante de Jose' text should fade in smoothly after a delay of ~1.5s, once sorting is visually complete.",
+    "Corner group titles (Los Comerrocas, etc.) should use the exact specified colors and have a slight mystical glow (drop-shadow).",
+    "Ensure the Auryn image pulses or rotates slowly when idle, and has a magical hover effect (scale up + intense glow). When clicked, it should trigger `setIsSorted(true)`.",
+    "Add a magical particles or noise overlay for the background to enhance the fantasy aesthetic.",
+    "All interactive and key informational elements MUST include a data-testid attribute (e.g., data-testid='student-name', data-testid='group-title', data-testid='auryn-trigger')."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "You tend to converge toward generic outputs. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Use dark colors independently without gradients for backgrounds if needed, but a central radial glow is fine.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Every interaction needs micro-animations - hover states, transitions.",
+    "All interactive and key informational elements MUST include a data-testid attribute.",
+    "Components MUST use named exports, Pages MUST use default exports."
+  ]
+}
