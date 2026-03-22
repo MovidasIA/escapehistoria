@@ -1,52 +1,388 @@
-import { useEffect } from "react";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+// Auryn image URL
+const AURYN_IMAGE = "https://customer-assets.emergentagent.com/job_d9bfee2e-1cd6-4cca-8124-1a128871d13b/artifacts/8q4brk6d_Auryn.png";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+// Groups data
+const GROUPS = {
+  "Los Comerrocas": {
+    members: ["Pablo A", "Olivia", "Carlos", "Luz"],
+    color: "text-yellow-400",
+    glow: "drop-shadow-[0_0_12px_rgba(250,204,21,0.7)]",
+    position: "top-left"
+  },
+  "Los Silfos Nocturnos": {
+    members: ["Jorge", "Agustín", "David", "Valeria", "Miriam"],
+    color: "text-orange-500",
+    glow: "drop-shadow-[0_0_12px_rgba(234,88,12,0.7)]",
+    position: "top-right"
+  },
+  "Los Fuegos Fatuos": {
+    members: ["Salva", "Zoe", "Adriana", "Raúl", "Marcos"],
+    color: "text-orange-400",
+    glow: "drop-shadow-[0_0_12px_rgba(249,115,22,0.7)]",
+    position: "bottom-left"
+  },
+  "Los Diminutenses": {
+    members: ["Elena", "Lucía", "Alonso", "Ángel", "Pablo M"],
+    color: "text-green-500",
+    glow: "drop-shadow-[0_0_12px_rgba(34,197,94,0.7)]",
+    position: "bottom-right"
+  }
+};
+
+// Special member
+const SPECIAL_MEMBER = {
+  name: "Dary",
+  message: "Ayudante de Jose"
+};
+
+// All student names
+const ALL_NAMES = [
+  "Pablo A", "David", "Raúl", "Luz", "Jorge", "Lucía", "Elena", "Miriam",
+  "Salva", "Dary", "Pablo M", "Adriana", "Olivia", "Valeria", "Marcos",
+  "Zoe", "Alonso", "Carlos", "Ángel", "Agustín"
+];
+
+// Get group color for a name
+const getNameColor = (name) => {
+  for (const [groupName, groupData] of Object.entries(GROUPS)) {
+    if (groupData.members.includes(name)) {
+      return { color: groupData.color, glow: groupData.glow };
     }
-  };
+  }
+  if (name === SPECIAL_MEMBER.name) {
+    return { color: "text-yellow-300", glow: "drop-shadow-[0_0_12px_rgba(253,224,71,0.7)]" };
+  }
+  return { color: "text-white", glow: "" };
+};
 
-  useEffect(() => {
-    helloWorldApi();
+// Floating Name Component
+const FloatingName = ({ name, initialPosition, isSorted }) => {
+  const { color, glow } = getNameColor(name);
+  
+  // Generate random wandering animation
+  const wanderAnimation = useMemo(() => {
+    const points = Array.from({ length: 5 }, () => ({
+      x: (Math.random() - 0.5) * 150,
+      y: (Math.random() - 0.5) * 150,
+    }));
+    return {
+      x: points.map(p => p.x),
+      y: points.map(p => p.y),
+    };
   }, []);
 
+  if (isSorted) return null;
+
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+    <motion.div
+      layoutId={name}
+      className={`absolute font-cinzel font-semibold text-lg md:text-xl ${color} ${glow} cursor-default select-none`}
+      style={{
+        left: `${initialPosition.x}%`,
+        top: `${initialPosition.y}%`,
+      }}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        x: wanderAnimation.x,
+        y: wanderAnimation.y,
+      }}
+      transition={{
+        opacity: { duration: 0.5 },
+        scale: { duration: 0.5 },
+        x: {
+          duration: 20 + Math.random() * 10,
+          repeat: Infinity,
+          repeatType: "mirror",
+          ease: "easeInOut",
+        },
+        y: {
+          duration: 15 + Math.random() * 10,
+          repeat: Infinity,
+          repeatType: "mirror",
+          ease: "easeInOut",
+        },
+      }}
+      data-testid={`floating-name-${name.replace(/\s+/g, '-')}`}
+    >
+      {name}
+    </motion.div>
+  );
+};
+
+// Group Corner Component
+const GroupCorner = ({ groupName, groupData, isSorted }) => {
+  const positionClasses = {
+    "top-left": "top-2 left-4 md:top-4 md:left-6 items-start text-left",
+    "top-right": "top-2 right-4 md:top-4 md:right-6 items-end text-right",
+    "bottom-left": "bottom-10 left-4 md:bottom-12 md:left-6 items-start text-left",
+    "bottom-right": "bottom-10 right-4 md:bottom-12 md:right-6 items-end text-right"
+  };
+
+  return (
+    <div
+      className={`absolute flex flex-col gap-1 md:gap-2 z-20 ${positionClasses[groupData.position]}`}
+      data-testid={`group-corner-${groupData.position}`}
+    >
+      <motion.h2
+        className={`font-cinzel font-bold text-lg md:text-xl lg:text-2xl tracking-wider uppercase ${groupData.color} ${groupData.glow}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        data-testid={`group-title-${groupName.replace(/\s+/g, '-')}`}
+      >
+        {groupName}
+      </motion.h2>
+      
+      {isSorted && (
+        <div className="flex flex-col gap-0.5 md:gap-1 mt-1">
+          {groupData.members.map((name, index) => (
+            <motion.div
+              key={name}
+              layoutId={name}
+              className={`font-cinzel font-semibold text-sm md:text-base ${groupData.color} ${groupData.glow}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                layout: { duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] },
+                opacity: { delay: index * 0.1, duration: 0.5 }
+              }}
+              data-testid={`sorted-name-${name.replace(/\s+/g, '-')}`}
+            >
+              {name}
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-function App() {
+// Auryn Component
+const Auryn = ({ onClick, isSorted }) => {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+    <motion.button
+      onClick={onClick}
+      disabled={isSorted}
+      className="relative z-50 focus:outline-none cursor-pointer disabled:cursor-default"
+      whileHover={!isSorted ? { scale: 1.1 } : {}}
+      whileTap={!isSorted ? { scale: 0.95 } : {}}
+      data-testid="auryn-trigger"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          onClick();
+        }
+      }}
+    >
+      <motion.img
+        src={AURYN_IMAGE}
+        alt="Auryn - Click para ordenar los grupos"
+        className="w-40 h-40 md:w-56 md:h-56 lg:w-72 lg:h-72 object-contain drop-shadow-[0_0_30px_rgba(250,204,21,0.5)]"
+        animate={!isSorted ? {
+          rotate: [0, 5, -5, 0],
+          scale: [1, 1.02, 1],
+        } : {
+          rotate: 0,
+          scale: 1,
+        }}
+        transition={{
+          duration: 4,
+          repeat: !isSorted ? Infinity : 0,
+          ease: "easeInOut"
+        }}
+      />
+      {!isSorted && (
+        <motion.div
+          className="absolute inset-0 rounded-full bg-yellow-400/20"
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.3, 0, 0.3],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      )}
+    </motion.button>
+  );
+};
+
+// Dary Special Component
+const DarySpecial = ({ isSorted, showMessage }) => {
+  if (!isSorted) return null;
+
+  return (
+    <div className="flex flex-col items-center gap-3 mt-4">
+      <motion.div
+        layoutId="Dary"
+        className="font-cinzel font-semibold text-lg md:text-xl text-yellow-300 drop-shadow-[0_0_12px_rgba(253,224,71,0.7)]"
+        transition={{
+          layout: { duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }
+        }}
+        data-testid="dary-name"
+      >
+        Dary
+      </motion.div>
+      
+      <AnimatePresence>
+        {showMessage && (
+          <motion.p
+            className="font-cinzel italic text-base md:text-lg text-yellow-200/90 drop-shadow-[0_0_8px_rgba(253,224,71,0.5)]"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            data-testid="dary-message"
+          >
+            {SPECIAL_MEMBER.message}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// Magical Particles Background
+const MagicalParticles = () => {
+  const particles = useMemo(() => 
+    Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 3 + 1,
+      duration: Math.random() * 20 + 10,
+      delay: Math.random() * 5,
+    })), []
+  );
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {particles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute rounded-full bg-yellow-400/30"
+          style={{
+            left: `${particle.x}%`,
+            top: `${particle.y}%`,
+            width: particle.size,
+            height: particle.size,
+          }}
+          animate={{
+            y: [0, -100, 0],
+            opacity: [0.1, 0.5, 0.1],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            delay: particle.delay,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Main App Component
+function App() {
+  const [isSorted, setIsSorted] = useState(false);
+  const [showDaryMessage, setShowDaryMessage] = useState(false);
+
+  // Generate initial random positions for floating names
+  const initialPositions = useMemo(() => {
+    const positions = {};
+    ALL_NAMES.forEach((name) => {
+      // Keep names away from corners and center
+      let x, y;
+      do {
+        x = Math.random() * 70 + 15; // 15% to 85%
+        y = Math.random() * 70 + 15; // 15% to 85%
+      } while (
+        // Avoid center area
+        (x > 35 && x < 65 && y > 35 && y < 65) ||
+        // Avoid corners
+        (x < 25 && y < 25) ||
+        (x > 75 && y < 25) ||
+        (x < 25 && y > 75) ||
+        (x > 75 && y > 75)
+      );
+      positions[name] = { x, y };
+    });
+    return positions;
+  }, []);
+
+  const handleAurynClick = () => {
+    if (!isSorted) {
+      setIsSorted(true);
+      // Show Dary's message after names have settled
+      setTimeout(() => {
+        setShowDaryMessage(true);
+      }, 2000);
+    }
+  };
+
+  return (
+    <div 
+      className="app-container relative w-full h-screen overflow-hidden bg-neutral-950"
+      data-testid="escape-room-app"
+    >
+      {/* Radial Glow Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(30,30,30,1)_0%,_rgba(10,10,10,1)_70%,_rgba(5,5,5,1)_100%)]" />
+      
+      {/* Magical Particles */}
+      <MagicalParticles />
+
+      {/* Group Corners */}
+      {Object.entries(GROUPS).map(([groupName, groupData]) => (
+        <GroupCorner
+          key={groupName}
+          groupName={groupName}
+          groupData={groupData}
+          isSorted={isSorted}
+        />
+      ))}
+
+      {/* Floating Names Container */}
+      <div className="absolute inset-0 z-10 pointer-events-none">
+        {ALL_NAMES.map((name) => (
+          <FloatingName
+            key={name}
+            name={name}
+            initialPosition={initialPositions[name]}
+            isSorted={isSorted}
+          />
+        ))}
+      </div>
+
+      {/* Center Auryn */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
+        <Auryn onClick={handleAurynClick} isSorted={isSorted} />
+        <DarySpecial isSorted={isSorted} showMessage={showDaryMessage} />
+      </div>
+
+      {/* Click instruction */}
+      <AnimatePresence>
+        {!isSorted && (
+          <motion.p
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 font-cinzel text-sm md:text-base text-yellow-400/60 z-40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 2, duration: 1 }}
+            data-testid="click-instruction"
+          >
+            Haz clic en el Auryn para formar los grupos
+          </motion.p>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
