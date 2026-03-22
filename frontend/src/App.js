@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "@/App.css";
 
@@ -39,6 +39,30 @@ const SPECIAL_MEMBER = {
   message: "Ayudante de Jose"
 };
 
+// All student names in sorting order (mixed from all groups for dramatic effect)
+const SORTING_ORDER = [
+  "Pablo A",    // Comerrocas
+  "Jorge",      // Silfos
+  "Salva",      // Fuegos
+  "Elena",      // Diminutenses
+  "Olivia",     // Comerrocas
+  "Agustín",    // Silfos
+  "Zoe",        // Fuegos
+  "Lucía",      // Diminutenses
+  "Carlos",     // Comerrocas
+  "David",      // Silfos
+  "Adriana",    // Fuegos
+  "Alonso",     // Diminutenses
+  "Luz",        // Comerrocas
+  "Valeria",    // Silfos
+  "Raúl",       // Fuegos
+  "Ángel",      // Diminutenses
+  "Miriam",     // Silfos
+  "Marcos",     // Fuegos
+  "Pablo M",    // Diminutenses
+  "Dary"        // Special - last one
+];
+
 // All student names
 const ALL_NAMES = [
   "Pablo A", "David", "Raúl", "Luz", "Jorge", "Lucía", "Elena", "Miriam",
@@ -77,9 +101,10 @@ const getGroupColor = (name) => {
 };
 
 // Floating Name Component
-const FloatingName = ({ name, initialPosition, isSorted }) => {
+const FloatingName = ({ name, initialPosition, sortedNames }) => {
   // Use purple shade when floating
   const { color, glow } = getPurpleShade(name);
+  const isSorted = sortedNames.includes(name);
   
   // Generate random wandering animation
   const wanderAnimation = useMemo(() => {
@@ -134,13 +159,16 @@ const FloatingName = ({ name, initialPosition, isSorted }) => {
 };
 
 // Group Corner Component
-const GroupCorner = ({ groupName, groupData, isSorted }) => {
+const GroupCorner = ({ groupName, groupData, sortedNames }) => {
   const positionClasses = {
     "top-left": "top-2 left-4 md:top-4 md:left-6 items-start text-left",
     "top-right": "top-2 right-4 md:top-4 md:right-6 items-end text-right",
     "bottom-left": "bottom-10 left-4 md:bottom-12 md:left-6 items-start text-left",
     "bottom-right": "bottom-10 right-4 md:bottom-12 md:right-6 items-end text-right"
   };
+
+  // Filter members that have been sorted
+  const sortedMembers = groupData.members.filter(name => sortedNames.includes(name));
 
   return (
     <div
@@ -157,26 +185,27 @@ const GroupCorner = ({ groupName, groupData, isSorted }) => {
         {groupName}
       </motion.h2>
       
-      {isSorted && (
-        <div className="flex flex-col gap-0.5 md:gap-1 mt-1">
-          {groupData.members.map((name, index) => (
+      <div className="flex flex-col gap-0.5 md:gap-1 mt-1">
+        <AnimatePresence>
+          {sortedMembers.map((name) => (
             <motion.div
               key={name}
               layoutId={name}
               className={`font-cinzel font-semibold text-sm md:text-base ${groupData.color} ${groupData.glow}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, scale: 1.5 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{
-                layout: { duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] },
-                opacity: { delay: index * 0.1, duration: 0.5 }
+                layout: { duration: 1.2, ease: [0.25, 0.1, 0.25, 1] },
+                opacity: { duration: 0.5 },
+                scale: { duration: 0.5 }
               }}
               data-testid={`sorted-name-${name.replace(/\s+/g, '-')}`}
             >
               {name}
             </motion.div>
           ))}
-        </div>
-      )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };
@@ -237,16 +266,22 @@ const Auryn = ({ onClick, isSorted }) => {
 };
 
 // Dary Special Component
-const DarySpecial = ({ isSorted, showMessage }) => {
-  if (!isSorted) return null;
+const DarySpecial = ({ sortedNames, showMessage }) => {
+  const isDarySorted = sortedNames.includes("Dary");
+  
+  if (!isDarySorted) return null;
 
   return (
     <div className="flex flex-col items-center gap-3 mt-4">
       <motion.div
         layoutId="Dary"
         className="font-cinzel font-semibold text-lg md:text-xl text-yellow-300 drop-shadow-[0_0_12px_rgba(253,224,71,0.7)]"
+        initial={{ opacity: 0, scale: 1.5 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{
-          layout: { duration: 1.5, ease: [0.43, 0.13, 0.23, 0.96] }
+          layout: { duration: 1.2, ease: [0.25, 0.1, 0.25, 1] },
+          opacity: { duration: 0.5 },
+          scale: { duration: 0.5 }
         }}
         data-testid="dary-name"
       >
@@ -313,7 +348,8 @@ const MagicalParticles = () => {
 
 // Main App Component
 function App() {
-  const [isSorted, setIsSorted] = useState(false);
+  const [isSorting, setIsSorting] = useState(false);
+  const [sortedNames, setSortedNames] = useState([]);
   const [showDaryMessage, setShowDaryMessage] = useState(false);
 
   // Generate initial random positions for floating names
@@ -339,13 +375,27 @@ function App() {
     return positions;
   }, []);
 
-  const handleAurynClick = () => {
-    if (!isSorted) {
-      setIsSorted(true);
-      // Show Dary's message after names have settled
-      setTimeout(() => {
+  // Sequential sorting effect
+  useEffect(() => {
+    if (isSorting && sortedNames.length < SORTING_ORDER.length) {
+      const timer = setTimeout(() => {
+        const nextName = SORTING_ORDER[sortedNames.length];
+        setSortedNames(prev => [...prev, nextName]);
+      }, 800); // 800ms between each name
+      
+      return () => clearTimeout(timer);
+    } else if (sortedNames.length === SORTING_ORDER.length) {
+      // All names sorted, show Dary's message
+      const timer = setTimeout(() => {
         setShowDaryMessage(true);
-      }, 2000);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSorting, sortedNames]);
+
+  const handleAurynClick = () => {
+    if (!isSorting) {
+      setIsSorting(true);
     }
   };
 
@@ -366,7 +416,7 @@ function App() {
           key={groupName}
           groupName={groupName}
           groupData={groupData}
-          isSorted={isSorted}
+          sortedNames={sortedNames}
         />
       ))}
 
@@ -377,20 +427,20 @@ function App() {
             key={name}
             name={name}
             initialPosition={initialPositions[name]}
-            isSorted={isSorted}
+            sortedNames={sortedNames}
           />
         ))}
       </div>
 
       {/* Center Auryn */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
-        <Auryn onClick={handleAurynClick} isSorted={isSorted} />
-        <DarySpecial isSorted={isSorted} showMessage={showDaryMessage} />
+        <Auryn onClick={handleAurynClick} isSorted={isSorting} />
+        <DarySpecial sortedNames={sortedNames} showMessage={showDaryMessage} />
       </div>
 
       {/* Click instruction */}
       <AnimatePresence>
-        {!isSorted && (
+        {!isSorting && (
           <motion.p
             className="absolute bottom-8 left-1/2 transform -translate-x-1/2 font-cinzel text-sm md:text-base text-yellow-400/60 z-40"
             initial={{ opacity: 0 }}
