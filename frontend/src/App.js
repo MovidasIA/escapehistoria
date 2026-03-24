@@ -123,7 +123,7 @@ const FloatingName = ({ name, initialPosition, sortedNames }) => {
   return (
     <motion.div
       layoutId={name}
-      className={`absolute font-cinzel font-semibold text-lg md:text-xl ${color} ${glow} cursor-default select-none`}
+      className={`absolute font-cinzel font-semibold text-xl md:text-2xl ${color} ${glow} cursor-default select-none`}
       style={{
         left: `${initialPosition.x}%`,
         top: `${initialPosition.y}%`,
@@ -191,7 +191,7 @@ const GroupCorner = ({ groupName, groupData, sortedNames }) => {
             <motion.div
               key={name}
               layoutId={name}
-              className={`font-cinzel font-semibold text-sm md:text-base ${groupData.color} ${groupData.glow}`}
+              className={`font-cinzel font-semibold text-base md:text-lg ${groupData.color} ${groupData.glow}`}
               initial={{ opacity: 0, scale: 1.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{
@@ -228,7 +228,7 @@ const Auryn = ({ onClick, isSorted }) => {
         }
       }}
     >
-      <div className="relative w-40 h-40 md:w-56 md:h-56 lg:w-72 lg:h-72 rounded-full overflow-hidden">
+      <div className="relative w-32 h-32 md:w-40 md:h-40 lg:w-52 lg:h-52 rounded-full overflow-hidden">
         <motion.img
           src={AURYN_IMAGE}
           alt="Auryn - Click para ordenar los grupos"
@@ -275,7 +275,7 @@ const DarySpecial = ({ sortedNames, showMessage }) => {
     <div className="flex flex-col items-center gap-3 mt-4">
       <motion.div
         layoutId="Dary"
-        className="font-cinzel font-semibold text-lg md:text-xl text-yellow-300 drop-shadow-[0_0_12px_rgba(253,224,71,0.7)]"
+        className="font-cinzel font-semibold text-xl md:text-2xl text-yellow-300 drop-shadow-[0_0_12px_rgba(253,224,71,0.7)]"
         initial={{ opacity: 0, scale: 1.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{
