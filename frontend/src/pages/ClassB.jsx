@@ -242,10 +242,10 @@ export default function ClassB() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(30,30,30,1)_0%,_rgba(10,10,10,1)_70%,_rgba(5,5,5,1)_100%)]" />
       <MagicalParticles />
 
-      {/* Back Button */}
+      {/* Back Button - centered below class title */}
       <motion.button
         onClick={() => navigate("/")}
-        className="absolute top-4 left-4 z-50 font-cinzel text-yellow-400/70 hover:text-yellow-400 transition-colors"
+        className="absolute top-12 left-1/2 transform -translate-x-1/2 z-50 font-cinzel text-sm text-yellow-400/70 hover:text-yellow-400 transition-colors"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
