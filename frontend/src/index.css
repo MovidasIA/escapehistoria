@@ -2,12 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Lato:wght@300;400;700&display=swap');
+
+:root {
+  --void: #050510;
+  --void-light: #1a1a2e;
+  --gold: #D4AF37;
+  --gold-dim: #8A7124;
+  --silver: #C0C0C0;
+  --parchment: #f0e6d2;
+  --parchment-dark: #dcbfa6;
+  --success-neon: #39FF14;
+  --danger: #800000;
+  --danger-glow: #ff0000;
+  --ivory: #fffff0;
+}
+
 body {
   margin: 0;
   font-family: 'Cinzel', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #0a0a0a;
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+.font-lato {
+  font-family: 'Lato', sans-serif;
 }
 
 code {
@@ -53,37 +78,200 @@ code {
   }
 }
 
-@layer base {
-  [data-debug-wrapper="true"] {
-    display: contents !important;
-  }
+/* Glow Effects */
+.glow-gold {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 40px rgba(212, 175, 55, 0.2);
+}
 
-  [data-debug-wrapper="true"] > * {
-    margin-left: inherit;
-    margin-right: inherit;
-    margin-top: inherit;
-    margin-bottom: inherit;
-    padding-left: inherit;
-    padding-right: inherit;
-    padding-top: inherit;
-    padding-bottom: inherit;
-    column-gap: inherit;
-    row-gap: inherit;
-    gap: inherit;
-    border-left-width: inherit;
-    border-right-width: inherit;
-    border-top-width: inherit;
-    border-bottom-width: inherit;
-    border-left-style: inherit;
-    border-right-style: inherit;
-    border-top-style: inherit;
-    border-bottom-style: inherit;
-    border-left-color: inherit;
-    border-right-color: inherit;
-    border-top-color: inherit;
-    border-bottom-color: inherit;
+.glow-neon {
+  box-shadow: 0 0 15px #39FF14, 0 0 30px #39FF14;
+}
+
+.glow-danger {
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}
+
+.text-glow {
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Phase Backgrounds for Escape Room */
+.phase-1 {
+  background-image: linear-gradient(rgba(5, 5, 16, 0.7), rgba(5, 5, 16, 0.85)),
+    url('https://images.unsplash.com/photo-1675611559364-4b3e04347077?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwzfHxmYW50YXN5JTIwaXZvcnklMjB0b3dlciUyMHdoaXRlJTIwcGFsYWNlJTIwY2xvdWRzfGVufDB8fHx8MTc3MzQzNTUwNnww&ixlib=rb-4.1.0&q=85');
+  background-size: cover;
+  background-position: center;
+}
+
+.phase-2 {
+  background-image: linear-gradient(rgba(5, 5, 16, 0.6), rgba(5, 5, 16, 0.8)),
+    url('https://images.unsplash.com/photo-1710270822096-ccfa274be004?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwyfHxzdGFycnklMjBkYXJrJTIwdm9pZCUyMHNwYWNlJTIwbmVidWxhJTIwcHVycGxlfGVufDB8fHx8MTc3MzQzNTUyNHww&ixlib=rb-4.1.0&q=85');
+  background-size: cover;
+  background-position: center;
+}
+
+.phase-3 {
+  background-image: linear-gradient(rgba(5, 5, 16, 0.6), rgba(5, 5, 16, 0.8)),
+    url('https://images.unsplash.com/photo-1737846162458-226d4af2c938?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwyfHxmYW50YXN5JTIwbmlnaHQlMjBmb3Jlc3QlMjBnbG93aW5nJTIwcGxhbnRzJTIwYmlvbHVtaW5lc2NlbnR8ZW58MHx8fHwxNzczNDM1NTA3fDA&ixlib=rb-4.1.0&q=85');
+  background-size: cover;
+  background-position: center;
+}
+
+.phase-4 {
+  background-image: linear-gradient(rgba(5, 5, 16, 0.6), rgba(5, 5, 16, 0.8)),
+    url('https://images.unsplash.com/photo-1727261909598-ce67f083f858?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHwxfHxmYW50YXN5JTIwbW91bnRhaW4lMjBqYWdnZWQlMjBwZWFrcyUyMHN0b3JtJTIwb21pbm91c3xlbnwwfHx8fDE3NzM0MzU1MDl8MA&ixlib=rb-4.1.0&q=85');
+  background-size: cover;
+  background-position: center;
+}
+
+.phase-5 {
+  background-image: linear-gradient(rgba(5, 5, 16, 0.5), rgba(5, 5, 16, 0.7)),
+    url('https://images.unsplash.com/photo-1772984803502-2a69be8ed98e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHwyfHxvbGQlMjBwYXJjaG1lbnQlMjBwYXBlciUyMHRleHR1cmUlMjB2aW50YWdlfGVufDB8fHx8MTc3MzQzNTUxMHww&ixlib=rb-4.1.0&q=85');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Animations */
+@keyframes pulse-urgent {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-pulse-urgent {
+  animation: pulse-urgent 1s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Glass Panel */
+.glass-panel {
+  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Progress Node Styles */
+.node-default {
+  border: 2px solid var(--silver);
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.node-active {
+  border: 2px solid var(--success-neon);
+  background: var(--success-neon);
+  box-shadow: 0 0 15px var(--success-neon), 0 0 30px var(--success-neon);
+}
+
+/* Timer Styles */
+.timer-green {
+  color: #39FF14;
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.timer-heartbeat {
+  color: var(--danger-glow);
+  text-shadow: 0 0 15px rgba(255, 0, 0, 1);
+  animation: heartbeat-timer 1s ease-in-out infinite;
+}
+
+@keyframes heartbeat-timer {
+  0%, 100% { 
+    transform: scale(1);
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+  }
+  50% { 
+    transform: scale(1.05);
+    text-shadow: 0 0 30px rgba(255, 0, 0, 1);
   }
 }
 
-/* Cinzel font import */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&display=swap');
+/* Oracle Scroll Style */
+.oracle-scroll {
+  background-color: #f5e6c8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23d4c4a8' fill-opacity='0.3'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  color: #2a1a0a;
+  border: 6px double #8A7124;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 0 30px rgba(139, 115, 85, 0.2);
+}
+
+/* Kingdom Cards */
+.kingdom-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.kingdom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+}
+
+/* Help Request Badge Animation */
+@keyframes bounce-soft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.help-badge {
+  animation: bounce-soft 1s ease-in-out infinite;
+}
+
+/* Final Countdown Heartbeat Effect */
+@keyframes heartbeat-glow {
+  0%, 100% { 
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.3), 
+                0 0 60px rgba(255, 0, 0, 0.2), 
+                0 0 90px rgba(255, 0, 0, 0.1);
+  }
+  50% { 
+    box-shadow: 0 0 50px rgba(255, 0, 0, 0.6), 
+                0 0 100px rgba(255, 0, 0, 0.4), 
+                0 0 150px rgba(255, 0, 0, 0.2);
+  }
+}
+
+.final-countdown-active {
+  animation: heartbeat-glow 1s ease-in-out infinite;
+  border-color: #ff0000 !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(250, 204, 21, 0.3);
+  color: white;
+}
+
+/* Ensure the app fills the viewport */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #0a0a0a;
+}

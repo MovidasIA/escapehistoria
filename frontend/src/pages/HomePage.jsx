@@ -123,7 +123,7 @@ export default function HomePage() {
           Selecciona tu clase
         </motion.p>
 
-        {/* Buttons */}
+        {/* Class Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
           <motion.button
             onClick={() => navigate("/5a")}
@@ -151,6 +151,20 @@ export default function HomePage() {
             5º B
           </motion.button>
         </div>
+
+        {/* Escape Room Button */}
+        <motion.button
+          onClick={() => navigate("/escape-room")}
+          className="mt-8 font-cinzel font-bold text-lg md:text-xl px-8 py-4 rounded-lg border-2 border-green-500 text-green-400 bg-transparent hover:bg-green-500/20 transition-all duration-300 tracking-wider"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 1.5 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          data-testid="btn-escape-room"
+        >
+          🗝️ EMPEZAR ESCAPE ROOM
+        </motion.button>
       </div>
     </div>
   );
